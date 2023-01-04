@@ -1,0 +1,61 @@
+{% extends "layout.html" %}
+{% block content %}
+    {% if bookings!=[] %}
+        {% for booking in bookings %}
+            <article class="media content-section">
+                <img class="rounded-circle article-img" src="{{ url_for('static', filename='profile_pics/' + 'default.jpg') }}" >
+                <div class="media-body">
+                    <div class="article-metadata">
+                        <a class="mr-2" href="#">{{ booking[1] }}</a>
+                    </div>
+                    <h2><a class="article-title" href="#">{{ booking[1] }}</a></h2>
+                    <p class="article-content">{{ booking[1] }}</p>
+                </div>
+            </article>
+        {% endfor %}
+    {% else %}
+    <div class="content-section">
+        <center>
+            You have not made any booking yet! <br>
+            <div>
+                <a class="btn btn-secondary mt-3" href="{{ url_for('new_booking_hotel') }}"> Make a new booking! </a>
+            </div>
+        </center>        
+    </div>
+    {% endif %}
+    <!-- {% for post in posts.items %}
+        <article class="media content-section">
+            <img class="rounded-circle article-img" src="{{ url_for('static', filename='profile_pics/' + post.author.image_file) }}" >
+            <div class="media-body">
+                <div class="article-metadata">
+                    <a class="mr-2" href="{{ url_for('user_posts', username=post.author.username) }}">{{ post.author.username }}</a>
+                    <small class="text-muted">{{ post.date_posted.strftime('%Y-%m-%d') }}</small>
+                </div>
+                <h2><a class="article-title" href="{{ url_for('post', post_id=post.id) }}">{{ post.title }}</a></h2>
+                <p class="article-content">{{ post.content }}</p>
+            </div>
+        </article>
+    {% endfor%}
+    <center>
+        {% if posts!=None %}
+            {% for page_num in posts.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+                {% if page_num %}
+                    {% if posts.page == page_num %}
+                        <a class="btn btn-info mb-4" href="{{ url_for('home', username=current_user.username, page=page_num) }}">{{ page_num }}</a>
+                    {% else %}
+                        <a class="btn btn-outline-info mb-4" href="{{ url_for('home', username=current_user.username, page=page_num) }}">{{ page_num }}</a>
+                    {% endif %}
+                {% else %}
+                    ...
+                {% endif %}
+            {% endfor%}
+        {% else %}
+        <div class="content-section">
+            You have not made any booking yet! <br>
+            <div>
+                <a class="btn btn-secondary" href="{{ url_for('new_booking_hotel') }}"> Make a new booking! </a>
+            </div>
+        </div>
+        {% endif %}
+    </center> -->
+{% endblock content %}

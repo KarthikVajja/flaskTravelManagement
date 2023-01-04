@@ -1,0 +1,182 @@
+{% extends "layout.html" %}
+{% block scripts %}
+  {{ super() }}
+  {{ datepicker.loader() }} {# to load jQuery-ui #}
+  {{ datepicker.picker(id=".dp") }}
+{% endblock %}
+{% block content %}
+<div class="content-section">
+    <div class="search_select_box">
+        <center>
+            <div class="dropdown" style="width: 100%;">
+                <a id="my-dropdown" href="#" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown">Bus Booking</a>
+                <ul class="dropdown-menu">
+                    <li><a href="{{ url_for('new_booking_hotel') }}" class="btn">Hotel Booking</a></li>
+                    <li><a href="{{ url_for('new_booking_aero') }}" class="btn">Flight Booking</a></li>
+                    <li><a href="{{ url_for('new_booking_bus') }}" class="btn">Bus Booking</a></li>
+                </ul>
+            </div>
+        </center>
+    </div>
+    <form method="POST" action="">
+        {{ form.hidden_tag() }}
+        <fieldset class="form-group">
+            <legend class="border-bottom mb-4">{{ legend }}</legend>
+            <center>
+                <div style="width: 70%;">
+                    {% if form.sourceState.errors %}
+                        <div style="float: left;">
+                            {{ form.sourceState.label(class="form-control-label") }}
+                        </div>
+                        {{ form.sourceState(class="form-control is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.sourceState.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div style="float: left;">
+                            {{ form.sourceState.label(class="form-control-label") }}
+                        </div>
+                        {{ form.sourceState(class="form-control") }}
+                    {% endif %}
+                </div>
+
+                <div style="width: 70%;" class="mt-3">
+                    {% if form.sourceCity.errors %}
+                        <div style="float: left;">
+                            {{ form.sourceCity.label(class="form-control-label") }}
+                        </div>
+                        {{ form.sourceCity(class="form-control is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.sourceCity.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div style="float: left;">
+                            {{ form.sourceCity.label(class="form-control-label") }}
+                        </div>
+                        {{ form.sourceCity(class="form-control") }}
+                    {% endif %}
+                </div>
+
+                <div style="width: 70%;">
+                    {% if form.destState.errors %}
+                        <div style="float: left;">
+                            {{ form.destState.label(class="form-control-label") }}
+                        </div>
+                        {{ form.destState(class="form-control is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.destState.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div style="float: left;">
+                            {{ form.destState.label(class="form-control-label") }}
+                        </div>
+                        {{ form.destState(class="form-control") }}
+                    {% endif %}
+                </div>
+
+                <div style="width: 70%;" class="mt-3">
+                    {% if form.destCity.errors %}
+                        <div style="float: left;">
+                            {{ form.destCity.label(class="form-control-label") }}
+                        </div>
+                        {{ form.destCity(class="form-control is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.destCity.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div style="float: left;">
+                            {{ form.destCity.label(class="form-control-label") }}
+                        </div>
+                        {{ form.destCity(class="form-control") }}
+                    {% endif %}
+                </div>
+
+                <div class="mt-3" style="float: left;">
+                    Start Date
+                    {{ form.travelDate (class= "DateTimeField" )}}
+                </div>
+
+                <div class="mt-3" style="margin-left: auto;">
+                    {{ form.submit(class="btn btn-outline-info") }}
+                </div>
+
+                <script>
+                    let source_state_select = document.getElementById('sourceState');
+                    let source_city_select = document.getElementById('sourceCity');
+                    let dest_state_select = document.getElementById('destState');
+                    let dest_city_select = document.getElementById('destCity');
+                    source_state_select.onchange = function() {
+                        state = source_state_select.value;
+                        destCity = dest_city_select.value;
+                        fetch('/booking/new/'+state).then(function(response){
+                            response.json().then(function(data){
+                                let optionHTML = '';
+                                for (let i in data.cities) {
+                                    let city = data.cities[i]
+                                    if (city.name!=destCity)
+                                    optionHTML+='<option value="' + city.id + '">' + city.name + '</option>';
+                                }
+                                source_city_select.innerHTML = optionHTML;
+                            });
+                        });
+                    }
+                    dest_state_select.onchange = function() {
+                        state = dest_state_select.value;
+                        sourceCity = source_city_select.value;
+                        fetch('/booking/new/'+state).then(function(response){
+                            response.json().then(function(data){
+                                let optionHTML = '';
+                                for (let i in data.cities) {
+                                    let city = data.cities[i]
+                                    if (city.name!=sourceCity)
+                                    optionHTML+='<option value="' + city.id + '">' + city.name + '</option>';
+                                }
+                                dest_city_select.innerHTML = optionHTML;
+                            });
+                        });
+                    }
+                    source_city_select.onchange = function() {
+                        state = dest_state_select.value;
+                        sourceCity = source_city_select.value;
+                        fetch('/booking/new/'+state).then(function(response){
+                            response.json().then(function(data){
+                                let optionHTML = '';
+                                for (let i in data.cities) {
+                                    let city = data.cities[i]
+                                    if (city.name!=sourceCity)
+                                    optionHTML+='<option value="' + city.id + '">' + city.name + '</option>';
+                                }
+                                dest_city_select.innerHTML = optionHTML;
+                            });
+                        });
+                    }
+                    dest_city_select.onchange = function() {
+                        state = source_state_select.value;
+                        destCity = dest_city_select.value;
+                        fetch('/booking/new/'+state).then(function(response){
+                            response.json().then(function(data){
+                                let optionHTML = '';
+                                for (let i in data.cities) {
+                                    let city = data.cities[i]
+                                    if (city.name!=destCity)
+                                    optionHTML+='<option value="' + city.id + '">' + city.name + '</option>';
+                                }
+                                source_city_select.innerHTML = optionHTML;
+                            });
+                        });
+                    }
+                </script>
+
+            </center>
+        </fieldset>
+    </form>
+</div>
+{% endblock content %}
